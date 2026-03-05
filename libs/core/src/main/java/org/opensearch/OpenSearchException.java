@@ -400,7 +400,11 @@ public class OpenSearchException extends RuntimeException implements Writeable, 
         builder.field(REASON, message);
 
         for (Map.Entry<String, List<String>> entry : metadata.entrySet()) {
-            headerToXContent(builder, entry.getKey().substring(OPENSEARCH_PREFIX_KEY.length()), entry.getValue());
+            String key = entry.getKey();
+            String outKey = key.startsWith(OPENSEARCH_PREFIX_KEY) 
+                ? key.substring(OPENSEARCH_PREFIX_KEY.length()) 
+                : key;
+            headerToXContent(builder, outKey, entry.getValue());
         }
 
         if (throwable instanceof OpenSearchException) {
